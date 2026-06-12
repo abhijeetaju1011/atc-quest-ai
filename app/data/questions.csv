@@ -1,0 +1,51 @@
+text,category,is_spam,is_toxic
+"How do I write a for loop in Python?",doubt,0,0
+"What is the difference between list and tuple?",doubt,0,0
+"Can you explain recursion with an example?",doubt,0,0
+"What is machine learning?",doubt,0,0
+"How does a neural network work?",doubt,0,0
+"What is the time complexity of binary search?",doubt,0,0
+"How do I connect Python to a database?",doubt,0,0
+"What is the difference between supervised and unsupervised learning?",doubt,0,0
+"How do I use pandas to read a CSV file?",doubt,0,0
+"What is object oriented programming?",doubt,0,0
+"When is the deadline for Assignment 3?",assignment,0,0
+"Please share the assignment 2 problem statement",assignment,0,0
+"I have not received my assignment marks yet",assignment,0,0
+"Can I submit the assignment after the deadline?",assignment,0,0
+"What are the topics covered in this week assignment?",assignment,0,0
+"How many questions are there in assignment 1?",assignment,0,0
+"Is group submission allowed for assignment 4?",assignment,0,0
+"Where do I submit the final project?",assignment,0,0
+"My assignment was submitted but not graded",assignment,0,0
+"What is the marking scheme for assignment 2?",assignment,0,0
+"How do I reset my password?",admin,0,0
+"I cannot login to my account",admin,0,0
+"How do I update my profile picture?",admin,0,0
+"When will the next batch start?",admin,0,0
+"How do I get my course completion certificate?",admin,0,0
+"I have not received the fee receipt",admin,0,0
+"How do I enroll in a new course?",admin,0,0
+"My payment failed but money was deducted",admin,0,0
+"How do I contact the support team?",admin,0,0
+"Can I change my course after enrollment?",admin,0,0
+"WIN FREE iPHONE click here now!!!",doubt,1,0
+"Earn 10000 rupees daily from home click link",doubt,1,0
+"FREE course certificate without studying visit now",doubt,1,0
+"Buy fake assignment answers guaranteed pass",doubt,1,0
+"Cheap followers for Instagram click here",doubt,1,0
+"Make money fast no work needed",doubt,1,0
+"Free premium account click this link",doubt,1,0
+"Win lottery prize claim now urgent",doubt,1,0
+"Best deal ever limited time offer click",doubt,1,0
+"Download pirated software free here",doubt,1,0
+"This teacher is absolutely stupid and useless",doubt,0,1
+"I hate this platform it is the worst",doubt,0,1
+"You are an idiot for asking this question",doubt,0,1
+"This course is garbage waste of money",doubt,0,1
+"Shut up nobody asked for your opinion",doubt,0,1
+"What a dumb question only fools ask this",doubt,0,1
+"This mentor is incompetent and should be fired",doubt,0,1
+"I want to destroy this stupid platform",doubt,0,1
+"Everyone here is an absolute moron",doubt,0,1
+"Stop wasting my time with this rubbish content",doubt,0,1

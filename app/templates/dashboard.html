@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ATC QUEST AI Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; }
+
+    /* NAV */
+    nav {
+      background: #1e293b;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #3b82f6;
+    }
+    .nav-title { font-size: 1.3rem; font-weight: 700; color: #3b82f6; }
+    .nav-badge {
+      background: #3b82f6;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* MAIN */
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 0;
+    }
+    .tab {
+      padding: 0.7rem 1.5rem;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      font-weight: 600;
+      color: #94a3b8;
+      border: 1px solid transparent;
+      border-bottom: none;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: #1e293b;
+      color: #3b82f6;
+      border-color: #334155;
+    }
+    .tab:hover { color: #3b82f6; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* CARDS */
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+    }
+
+    /* INPUT AREA */
+    textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 1rem;
+      color: #e2e8f0;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+    }
+    textarea:focus { outline: none; border-color: #3b82f6; }
+
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #2563eb; }
+    .btn-green { background: #10b981; }
+    .btn-green:hover { background: #059669; }
+
+    /* RESULT BOX */
+    .result-box {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    .result-box.show { display: block; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin: 0.2rem;
+    }
+    .badge-blue { background: #1d4ed8; color: #bfdbfe; }
+    .badge-red { background: #991b1b; color: #fecaca; }
+    .badge-green { background: #065f46; color: #a7f3d0; }
+    .badge-yellow { background: #92400e; color: #fde68a; }
+
+    /* STAT GRID */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #3b82f6; }
+    .stat-label { font-size: 0.8rem; color: #64748b; margin-top: 0.3rem; }
+
+    /* TOPIC LIST */
+    .topic-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .topic-name { flex: 1; font-weight: 600; }
+    .progress-bar {
+      flex: 2;
+      background: #0f172a;
+      border-radius: 10px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.8s ease;
+    }
+    .topic-percent { width: 45px; text-align: right; font-size: 0.9rem; color: #94a3b8; }
+
+    /* RECOMMENDATION */
+    .rec-item {
+      background: #0f172a;
+      border-left: 3px solid #3b82f6;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+    .rec-item.high { border-color: #ef4444; }
+    .rec-item.medium { border-color: #f59e0b; }
+    .rec-topic { font-weight: 700; margin-bottom: 0.3rem; }
+    .rec-text { color: #94a3b8; font-size: 0.9rem; }
+    .rec-why { color: #64748b; font-size: 0.8rem; margin-top: 0.3rem; }
+
+    /* STUDENT SELECT */
+    select {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      color: #e2e8f0;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    select:focus { outline: none; border-color: #3b82f6; }
+
+    /* FLAGGED */
+    .flag-item {
+      background: #0f172a;
+      border-left: 3px solid #ef4444;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+    .flag-text { margin-bottom: 0.5rem; }
+    .flag-meta { font-size: 0.8rem; color: #64748b; }
+
+    /* CHART */
+    .chart-wrap { max-width: 500px; margin: 0 auto; }
+
+    .loader {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid #334155;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-title">🎓 ATC QUEST AI Dashboard</div>
+  <span class="nav-badge">v1.0.0 Live</span>
+</nav>
+
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('classify')">🔍 Classify</div>
+    <div class="tab" onclick="showTab('student')">📊 Student Insights</div>
+    <div class="tab" onclick="showTab('flagged')">🚩 Flagged Posts</div>
+  </div>
+
+  <!-- PANEL 1: CLASSIFY -->
+  <div id="panel-classify" class="panel active">
+    <div class="card">
+      <h2>// Check Any Text</h2>
+      <textarea id="classify-input" placeholder="Type a student question or post here..."></textarea>
+      <button class="btn" onclick="classifyText()">Classify Question</button>
+      <button class="btn btn-green" style="margin-left:0.5rem" onclick="moderateText()">Check for Spam/Toxic</button>
+      <div id="classify-result" class="result-box"></div>
+      <div id="moderate-result" class="result-box"></div>
+    </div>
+  </div>
+
+  <!-- PANEL 2: STUDENT -->
+  <div id="panel-student" class="panel">
+    <div class="card">
+      <h2>// Select Student</h2>
+      <select id="student-select" onchange="loadStudent()">
+        <option value="">-- Select Student --</option>
+        <option value="S001">S001 — Abhijeet</option>
+        <option value="S002">S002 — Rahul</option>
+        <option value="S003">S003 — Priya</option>
+        <option value="S004">S004 — Amit</option>
+      </select>
+    </div>
+
+    <div id="student-data" style="display:none">
+      <!-- STATS -->
+      <div class="stat-grid" id="stat-grid"></div>
+
+      <!-- CHART -->
+      <div class="card">
+        <h2>// Topic Mastery Chart</h2>
+        <div class="chart-wrap">
+          <canvas id="masteryChart"></canvas>
+        </div>
+      </div>
+
+      <!-- WEAK TOPICS -->
+      <div class="card">
+        <h2>// Weak Topics (Lowest First)</h2>
+        <div id="weak-list"></div>
+      </div>
+
+      <!-- RECOMMENDATIONS -->
+      <div class="card">
+        <h2>// Study Recommendations</h2>
+        <div id="rec-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL 3: FLAGGED -->
+  <div id="panel-flagged" class="panel">
+    <div class="card">
+      <h2>// Posts Flagged for Review</h2>
+      <div id="flagged-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API = "http://127.0.0.1:8000";
+  let chartInstance = null;
+
+  // ── TABS ──
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+    if (name === 'flagged') loadFlagged();
+  }
+
+  // ── CLASSIFY ──
+  async function classifyText() {
+    const text = document.getElementById('classify-input').value.trim();
+    if (!text) return alert('Please enter some text!');
+    const res = await fetch(`${API}/classify-question`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    const box = document.getElementById('classify-result');
+    box.classList.add('show');
+    box.innerHTML = `
+      <p style="margin-bottom:0.5rem"><strong>Category:</strong>
+        <span class="badge badge-blue">${data.category.toUpperCase()}</span>
+        <span class="badge badge-green">Confidence: ${(data.category_confidence * 100).toFixed(0)}%</span>
+      </p>
+      <p><strong>Needs Human Review:</strong>
+        <span class="badge ${data.needs_human_review ? 'badge-red' : 'badge-green'}">
+          ${data.needs_human_review ? 'YES' : 'NO'}
+        </span>
+      </p>`;
+  }
+
+  // ── MODERATE ──
+  async function moderateText() {
+    const text = document.getElementById('classify-input').value.trim();
+    if (!text) return alert('Please enter some text!');
+    const [spamRes, toxicRes] = await Promise.all([
+      fetch(`${API}/classify-question`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) }),
+      fetch(`${API}/moderate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
+    ]);
+    const spam = await spamRes.json();
+    const toxic = await toxicRes.json();
+    const box = document.getElementById('moderate-result');
+    box.classList.add('show');
+    box.innerHTML = `
+      <p style="margin-bottom:0.5rem"><strong>Spam:</strong>
+        <span class="badge ${spam.is_spam ? 'badge-red' : 'badge-green'}">${spam.is_spam ? '🚨 SPAM' : '✅ Clean'}</span>
+        <span class="badge badge-blue">Confidence: ${(spam.spam_confidence * 100).toFixed(0)}%</span>
+      </p>
+      <p><strong>Toxic:</strong>
+        <span class="badge ${toxic.is_toxic ? 'badge-red' : 'badge-green'}">${toxic.is_toxic ? '🚨 TOXIC' : '✅ Clean'}</span>
+        <span class="badge badge-blue">Confidence: ${(toxic.confidence * 100).toFixed(0)}%</span>
+        <span class="badge badge-yellow">Action: ${toxic.action.toUpperCase()}</span>
+      </p>`;
+  }
+
+  // ── STUDENT INSIGHTS ──
+  async function loadStudent() {
+    const id = document.getElementById('student-select').value;
+    if (!id) return;
+
+    const [weakRes, recRes] = await Promise.all([
+      fetch(`${API}/weak-topics/${id}`),
+      fetch(`${API}/recommendations/${id}`)
+    ]);
+    const weak = await weakRes.json();
+    const rec = await recRes.json();
+
+    document.getElementById('student-data').style.display = 'block';
+
+    // Stats
+    const avg = (weak.weak_topics.reduce((s, t) => s + t.mastery_percent, 0) / weak.weak_topics.length).toFixed(1);
+    document.getElementById('stat-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-value">${weak.weak_topics.length}</div><div class="stat-label">Total Topics</div></div>
+      <div class="stat-card"><div class="stat-value">${rec.total_weak_topics}</div><div class="stat-label">Needs Improvement</div></div>
+      <div class="stat-card"><div class="stat-value">${avg}%</div><div class="stat-label">Avg Mastery</div></div>
+      <div class="stat-card"><div class="stat-value">${weak.student_name}</div><div class="stat-label">Student Name</div></div>
+    `;
+
+    // Chart
+    const labels = weak.weak_topics.map(t => t.topic);
+    const scores = weak.weak_topics.map(t => t.mastery_percent);
+    const colors = scores.map(s => s < 40 ? '#ef4444' : s < 60 ? '#f59e0b' : '#10b981');
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(document.getElementById('masteryChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Mastery %',
+          data: scores,
+          backgroundColor: colors,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+        }
+      }
+    });
+
+    // Weak topics list
+    document.getElementById('weak-list').innerHTML = weak.weak_topics.map(t => {
+      const color = t.mastery_percent < 40 ? '#ef4444' : t.mastery_percent < 60 ? '#f59e0b' : '#10b981';
+      return `<div class="topic-item">
+        <div class="topic-name">${t.topic}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${t.mastery_percent}%;background:${color}"></div></div>
+        <div class="topic-percent">${t.mastery_percent}%</div>
+      </div>`;
+    }).join('');
+
+    // Recommendations
+    if (rec.recommendations.length === 0) {
+      document.getElementById('rec-list').innerHTML = '<p style="color:#10b981">🎉 Great job! No weak topics found!</p>';
+    } else {
+      document.getElementById('rec-list').innerHTML = rec.recommendations.map(r => `
+        <div class="rec-item ${r.priority.toLowerCase()}">
+          <div class="rec-topic">${r.topic} <span class="badge ${r.priority === 'High' ? 'badge-red' : 'badge-yellow'}">${r.priority} Priority</span></div>
+          <div class="rec-text">📚 ${r.recommendation}</div>
+          <div class="rec-why">💡 ${r.why}</div>
+        </div>`).join('');
+    }
+  }
+
+  // ── FLAGGED POSTS ──
+  const flaggedPosts = [
+    { text: "WIN FREE iPHONE click here now!!!", type: "SPAM", confidence: 0.91 },
+    { text: "This teacher is absolutely stupid and useless", type: "TOXIC", confidence: 0.85 },
+    { text: "Buy fake assignment answers guaranteed pass", type: "SPAM", confidence: 0.88 },
+    { text: "Everyone here is an absolute moron", type: "TOXIC", confidence: 0.82 },
+  ];
+
+  function loadFlagged() {
+    document.getElementById('flagged-list').innerHTML = flaggedPosts.map(p => `
+      <div class="flag-item">
+        <div class="flag-text">"${p.text}"</div>
+        <div class="flag-meta">
+          <span class="badge badge-red">${p.type}</span>
+          <span class="badge badge-blue">Confidence: ${(p.confidence * 100).toFixed(0)}%</span>
+        </div>
+      </div>`).join('');
+  }
+</script>
+</body>
+</html>

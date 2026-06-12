@@ -1,0 +1,29 @@
+student_id,student_name,topic,score,total,attempts
+S001,Abhijeet,Python Basics,8,10,3
+S001,Abhijeet,Loops,4,10,2
+S001,Abhijeet,Functions,5,10,2
+S001,Abhijeet,OOP,3,10,1
+S001,Abhijeet,Machine Learning,6,10,2
+S001,Abhijeet,Data Structures,4,10,3
+S001,Abhijeet,Databases,7,10,2
+S002,Rahul,Python Basi9,10,2
+S002,Rahul,Loops,8,10,3
+S002,Rahul,Functions,4,10,1
+S002,Rahul,OOP,3,10,2
+S002,Rahul,Machine Learning,5,10,2
+S002,Rahul,Data Structures,7,10,1
+S002,Rahul,Databases,4,10,2
+S003,Priya,Python Basics,10,10,1
+S003,Priya,Loops,9,10,2
+S003,Priya,Functions,8,10,2
+S003,Priya,OOP,7,10,3
+S003,Priya,Machine Learning,3,10,1
+S003,Priya,Data Structures,4,10,2
+S003,Priya,Databases,6,10,1
+S004,Amit,Python Basics,5,10,2
+S004,Amit,Loops,6,10,1
+S004,Amit,Functions,3,10,3
+S004,Amit,OOP,4,10,2
+S004,Amit,Machine Learning,8,10,2
+S004,Amit,Data Structures,3,10,1
+S004,Amit,Databases,5,10,2
